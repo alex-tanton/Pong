@@ -7,12 +7,11 @@ class Object(pygame.sprite.Sprite):
         self.position = position
         self.size = size
         self.image_path = image_path
-
-    def set_image(self):
         self.image = pygame.image.load(self.image_path)
         self.image = pygame.transform.scale(self.image, self.size)
-
         self.surf = pygame.Surface(self.size).convert_alpha()
+
+    def set_image(self):
         self.rect = self.surf.get_rect(topleft=self.position)
         self.surf.blit(self.image, (0, 0))
 

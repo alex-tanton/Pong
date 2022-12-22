@@ -24,32 +24,25 @@ class Game:
         self.asset_setup()
 
     def asset_setup(self):
-        self.p1 = Bumper(self, (0, (self.height-100)/2), (20, 150), 20, "./Assets/bumper.png", self.bumper_group)
-        self.p2 = Bumper(self, (self.width-20, (self.height-100)/2),
-                         (20, 150), 20, "./Assets/bumper.png", self.bumper_group)
-        self.ball = Ball(self, ((self.width-10)/2, (self.height-10)/2), (10, 10),
-                         1.5, 1.5, "./Assets/ball.png", self.ball_group, self.bumper_group)
+        self.bumper_width, self.bumper_height = 20, 150
+        bumper_speed = 20
+
+        self.p1 = Bumper(self, (0, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
+        self.p2 = Bumper(self, (self.width-self.bumper_width, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
+
+        ball_radius = 10
+        ball_speed_x, ball_speed_y = -10, 0
+        self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius, ball_speed_x, ball_speed_y, "./Assets/ball.png", self.ball_group)
 
     def run(self):
         clock = pygame.time.Clock()
         break_loop = False
 
         while True:
-            # Exit loop if game closed
             for event in pygame.event.get():
+                # Exit loop if game closed
                 if event.type == pygame.QUIT:
                     break_loop = True
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w:
-                        self.p1.move("up")
-                    if event.key == pygame.K_s:
-                        self.p1.move("down")
-
-                    if event.key == pygame.K_i:
-                        self.p2.move("up")
-                    if event.key == pygame.K_k:
-                        self.p2.move("down")
             if break_loop: break
 
             # Bumper movement

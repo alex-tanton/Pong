@@ -1,30 +1,33 @@
 
-# Pygame Template
+# Pong
 
-This is a template from which pygame based 2-D games can be made. All basic framework and classes are included.
+Pong, originally manufactured by Atari and released in 1972, is a table tennis-themed game featuring simple two-dimensional graphics.
 
+This project is a replica of this classic game, built in python using the [pygame](https://www.pygame.org/) module, built for the GLHS Game Development Club.
+Player 1's bumper is controlled using the W and S keys; Player 2's bumper is controlled using the I and K keys.
+## Run Locally
 
-## Authors
-
-- [@alex-tanton](https://github.com/alex-tanton)
-
-
-## Startup
+#### Install [python](https://www.python.org/) and [pygame](https://www.pygame.org/)
 
 Clone the project
 
 ```bash
-  git clone https://github.com/alex-tanton/Startup
+  git clone https://github.com/alex-tanton/Pong.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd Startup
+  cd Pong
 ```
 
-Install dependencies
+Start the program
 
 ```bash
-  pip install pygame
+  python Pong.py
 ```
+
+
+## Authors
+
+- [@alex-tanton](https://github.com/alex-tanton)

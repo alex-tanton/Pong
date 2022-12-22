@@ -3,35 +3,75 @@ from Object import Object
 import math
 
 class Ball(Object):
-    def __init__(self, parent, position, size, dx, dy, color, group, collision_group):
-        super().__init__(position, size, color, group)
+    def __init__(self, parent, position, radius, dx, dy, color, group):
+        super().__init__(position, (radius, radius), color, group)
 
         self.parent = parent
         self.position, self.x, self.y = position, position[0], position[1]
-        self.width, self.height = size[0], size[1]
+        self.radius = radius
         self.dx, self.dy = dx, dy
-        self.collision_group = collision_group
 
     def move(self):
-        pass # TODO calculate position change from angle
+        self.y += self.dy
+        self.x += self.dx
 
+        # Check anything that would cause abnormal movement
         self.check_boundaries()
         self.check_collision()
         self.position = (self.x, self.y)
 
     def check_boundaries(self):
-        # Revert movement if outside screen
+        # Reverse y movement if hits top or bottom
         if self.y < 0:
             self.y = 0
-        elif self.y > self.parent.height - self.height:
-            self.y = self.parent.height - self.height
+            self.dy *= -1
+        elif self.y > self.parent.height - self.radius:
+            self.y = self.parent.height - self.radius
+            self.dy *= -1
+
+        # Handle score if past side of screen
         if self.x < 0:
-            self.x = 0
-        elif self.x > self.parent.width - self.width:
-            self.x = self.parent.width - self.width
+            pass # TODO score handling
+        elif self.x > self.parent.width - self.radius:
+            pass # TODO score handling
 
     def check_collision(self):
-        pass #TODO
+        # If ball is touching inside edge of bumper, or phased through bumper when it should have hit
+        if (self.x <= self.parent.bumper_width) and (self.parent.p1.y < self.y < self.parent.p1.y + self.parent.bumper_height):
+            # Then set ball to be at edge of bumper,
+            self.x = self.parent.bumper_width
+
+            # Calculate the centers of the ball and bumper,
+            ball_center = (self.x + self.radius/2, self.y + self.radius/2)
+            bumper_center = (self.parent.p1.x + self.parent.bumper_width/2, self.parent.p1.y + self.parent.bumper_height/2)
+
+            # Find the distance in each dimension,
+            distance_x = ball_center[0] - bumper_center[1]
+            distance_y = ball_center[1] - bumper_center[1]
+
+            # Calculate the collision angle using trig, *5 to make it more extreme
+            collision_angle = math.atan2(distance_y, distance_x) * 5
+
+            # Increase the speed of the ball so game gets harder the longer it is played
+            # And recalculate the velocity components using the collision angle
+            speed = math.sqrt(math.pow(self.dx, 2) + math.pow(self.dy, 2)) + 2
+            self.dy = math.sin(collision_angle) * speed
+            self.dx = math.cos(collision_angle) * speed * -1
+        # Same implementation as above but used for Player 2's bumper
+        elif (self.x >= self.parent.width - (self.parent.bumper_width + self.radius)) and (self.parent.p2.y < self.y < self.parent.p2.y + self.parent.bumper_height):
+            self.x = self.parent.width - (self.parent.bumper_width + self.radius)
+
+            ball_center = (self.x + self.radius/2, self.y + self.radius/2)
+            bumper_center = (self.parent.p2.x + self.parent.bumper_width/2, self.parent.p2.y + self.parent.bumper_height/2)
+
+            distance_x = ball_center[0] - bumper_center[1]
+            distance_y = ball_center[1] - bumper_center[1]
+
+            collision_angle = math.atan2(distance_y, distance_x) * 5
+
+            speed = math.sqrt(math.pow(self.dx, 2) + math.pow(self.dy, 2))
+            self.dy = math.sin(collision_angle) * speed
+            self.dx = math.cos(collision_angle) * speed * -1
 
     def update(self):
         self.move()
