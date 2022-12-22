@@ -33,11 +33,11 @@ class Game:
 
         ball_radius = 10
         self.initial_ball_speed_x, self.initial_ball_speed_y = -5, 0
-        self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius,
-                         self.initial_ball_speed_x, self.initial_ball_speed_y, "./Assets/ball.png", self.ball_group)
+        self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius, self.initial_ball_speed_x, self.initial_ball_speed_y, "./Assets/ball.png", self.ball_group)
 
     def run(self):
         clock = pygame.time.Clock()
+
         break_loop = False
 
         while True:
@@ -64,6 +64,7 @@ class Game:
                 for sprite in group:
                     sprite.update()
                 group.draw(self.display)
+
             pygame.display.update()
 
             clock.tick(144)
