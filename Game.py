@@ -21,18 +21,20 @@ class Game:
         self.misc_group = pygame.sprite.Group()
         self.all_groups = [self.bumper_group, self.ball_group, self.misc_group]
 
+        self.score = [0, 0]
         self.asset_setup()
 
     def asset_setup(self):
         self.bumper_width, self.bumper_height = 20, 150
-        bumper_speed = 20
+        bumper_speed = 10
 
         self.p1 = Bumper(self, (0, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
         self.p2 = Bumper(self, (self.width-self.bumper_width, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
 
         ball_radius = 10
-        ball_speed_x, ball_speed_y = -10, 0
-        self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius, ball_speed_x, ball_speed_y, "./Assets/ball.png", self.ball_group)
+        self.initial_ball_speed_x, self.initial_ball_speed_y = -5, 0
+        self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius,
+                         self.initial_ball_speed_x, self.initial_ball_speed_y, "./Assets/ball.png", self.ball_group)
 
     def run(self):
         clock = pygame.time.Clock()
