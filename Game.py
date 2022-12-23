@@ -37,6 +37,7 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
+        font = pygame.font.SysFont('freesansbold.ttf', 100)
 
         break_loop = False
 
@@ -64,6 +65,13 @@ class Game:
                 for sprite in group:
                     sprite.update()
                 group.draw(self.display)
+
+            # Draw score
+            p1_score = font.render(str(self.score[0]), 0, (100, 100, 100))
+            p2_score = font.render(str(self.score[1]), 0, (100, 100, 100))
+
+            self.display.blit(p1_score, (50, 50))
+            self.display.blit(p2_score, (100, 100))
 
             pygame.display.update()
 
