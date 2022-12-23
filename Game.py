@@ -25,19 +25,19 @@ class Game:
         self.asset_setup()
 
     def asset_setup(self):
-        self.bumper_width, self.bumper_height = 20, 150
-        bumper_speed = 10
+        self.bumper_width, self.bumper_height = self.width//100, self.height//7.5
+        bumper_speed = self.height/150
 
         self.p1 = Bumper(self, (0, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
         self.p2 = Bumper(self, (self.width-self.bumper_width, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
 
-        ball_radius = 10
-        self.initial_ball_speed_x, self.initial_ball_speed_y = -5, 0
+        ball_radius = self.width//175
+        self.initial_ball_speed_x, self.initial_ball_speed_y = -self.width//375, 0
         self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius, self.initial_ball_speed_x, self.initial_ball_speed_y, "./Assets/ball.png", self.ball_group)
 
     def run(self):
         clock = pygame.time.Clock()
-        font = pygame.font.SysFont('freesansbold.ttf', 100)
+        font = pygame.font.SysFont(None, 1000)
 
         break_loop = False
 
@@ -59,19 +59,24 @@ class Game:
             if keys_pressed[pygame.K_k]:
                 self.p2.move("down")
 
-            # Display updating
+            # Clear display
             self.display.fill((0, 0, 0))
+
+            # Draw score
+            p1_score = font.render(str(self.score[0]), 0, (50, 50, 50))
+            p2_score = font.render(str(self.score[1]), 0, (50, 50, 50))
+            p1_score_rect, p2_score_rect = p1_score.get_rect(), p2_score.get_rect()
+            p1_score_rect.center = (self.width//4, self.height//2)
+            p2_score_rect.center = (self.width//4*3, self.height//2)
+
+            self.display.blit(p1_score, p1_score_rect)
+            self.display.blit(p2_score, p2_score_rect)
+
+            # Update sprites
             for group in self.all_groups:
                 for sprite in group:
                     sprite.update()
                 group.draw(self.display)
-
-            # Draw score
-            p1_score = font.render(str(self.score[0]), 0, (100, 100, 100))
-            p2_score = font.render(str(self.score[1]), 0, (100, 100, 100))
-
-            self.display.blit(p1_score, (50, 50))
-            self.display.blit(p2_score, (100, 100))
 
             pygame.display.update()
 
