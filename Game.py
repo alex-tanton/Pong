@@ -7,48 +7,80 @@ class Game:
     def __init__(self, dimensions, title, icon_path):
         pygame.init()
 
-        self.dimensions, self.width, self.height = dimensions, dimensions[0], dimensions[1]
-        pygame.display.set_mode(self.dimensions)
+        # Set window dimension variables
+        self.width, self.height = dimensions[0], dimensions[1]
 
+        # Set window properties
+        pygame.display.set_mode(dimensions, pygame.RESIZABLE)
         pygame.display.set_caption(title)
         pygame.display.set_icon(pygame.image.load(icon_path).convert())
 
+        # Get display surface
         self.display = pygame.display.get_surface()
 
         # Sprite group initialization
         self.bumper_group = pygame.sprite.Group()
         self.ball_group = pygame.sprite.Group()
-        self.misc_group = pygame.sprite.Group()
-        self.all_groups = [self.bumper_group, self.ball_group, self.misc_group]
+        self.all_groups = [self.bumper_group, self.ball_group]
 
+        # Score keeping array
         self.score = [0, 0]
         self.asset_setup()
 
     def asset_setup(self):
-        self.bumper_width, self.bumper_height = self.width//100, self.height//7.5
+        # Calculate bumper dimensions and speed from window size
+        self.bumper_width, self.bumper_height = self.width/100, self.height/7.5
         bumper_speed = self.height/150
 
+        # Initialize bumper objects
         self.p1 = Bumper(self, (0, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
         self.p2 = Bumper(self, (self.width-self.bumper_width, (self.height-self.bumper_height)/2), (self.bumper_width,self.bumper_height), bumper_speed, "./Assets/bumper.png", self.bumper_group)
 
-        ball_radius = self.width//175
-        self.initial_ball_speed_x, self.initial_ball_speed_y = -self.width//375, 0
+        # Calculate ball size and speed
+        ball_radius = self.width/175
+        self.initial_ball_speed_x, self.initial_ball_speed_y = -self.width/375, 0
+
+        # Initialize ball
         self.ball = Ball(self, ((self.width-ball_radius)/2, (self.height-ball_radius)/2), ball_radius, self.initial_ball_speed_x, self.initial_ball_speed_y, "./Assets/ball.png", self.ball_group)
 
     def run(self):
+        # Set game control variables
         clock = pygame.time.Clock()
-        font = pygame.font.SysFont(None, 1000)
-
         break_loop = False
 
         while True:
+            # Window event handlers
             for event in pygame.event.get():
                 # Exit loop if game closed
                 if event.type == pygame.QUIT:
                     break_loop = True
+                # Handle window resizing
+                if event.type == pygame.VIDEORESIZE:
+                    # Calculate change and update window dimension variables
+                    ratio = [event.w / self.width, event.h / self.height]
+                    self.width, self.height = event.w, event.h
+
+                    # Update bumper size
+                    self.bumper_width *= ratio[0]
+                    self.bumper_height *= ratio[1]
+                    self.p1.width, self.p1.height = self.bumper_width, self.bumper_height
+                    self.p2.width, self.p2.height = self.bumper_width, self.bumper_height
+
+                    # Update bumper X positioning
+                    self.p1.x *= ratio[0]
+                    self.p2.x *= ratio[0]
+
+                    # Update bumper Y positioning
+                    self.p1.y *= ratio[1]
+                    self.p2.y *= ratio[1]
+
+                    # Apply updates
+                    self.p1.move("none"), self.p1.update()
+                    self.p2.move("none"), self.p2.update()
+
             if break_loop: break
 
-            # Bumper movement
+            # Translate player input to bumper movement
             keys_pressed = pygame.key.get_pressed()
             if keys_pressed[pygame.K_w]:
                 self.p1.move("up")
@@ -62,13 +94,21 @@ class Game:
             # Clear display
             self.display.fill((0, 0, 0))
 
-            # Draw score
+            # Initialize/update font and font size
+            font = pygame.font.SysFont(None, int(0.7 * self.height))
+
+            # Render score texts
             p1_score = font.render(str(self.score[0]), 0, (50, 50, 50))
             p2_score = font.render(str(self.score[1]), 0, (50, 50, 50))
-            p1_score_rect, p2_score_rect = p1_score.get_rect(), p2_score.get_rect()
-            p1_score_rect.center = (self.width//4, self.height//2)
-            p2_score_rect.center = (self.width//4*3, self.height//2)
 
+            # Get rects for score objects
+            p1_score_rect, p2_score_rect = p1_score.get_rect(), p2_score.get_rect()
+
+            # Set score positions
+            p1_score_rect.center = (self.width/4, self.height/2)
+            p2_score_rect.center = (self.width/4*3, self.height/2)
+
+            # Draw scores
             self.display.blit(p1_score, p1_score_rect)
             self.display.blit(p2_score, p2_score_rect)
 
@@ -78,9 +118,10 @@ class Game:
                     sprite.update()
                 group.draw(self.display)
 
+            # Update display
             pygame.display.update()
-
             clock.tick(144)
 
+        # Quit game
         pygame.quit()
         sys.exit()

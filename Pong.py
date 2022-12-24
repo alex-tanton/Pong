@@ -1,7 +1,7 @@
 from Game import Game
 
 ############### WINDOW SETUP ###############
-DIMENSIONS = (1920, 1080)
+DIMENSIONS = (1280, 720)
 TITLE = "Pong"
 ICON = "assets/icon.png"
 

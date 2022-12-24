@@ -15,6 +15,8 @@ class Bumper(Object):
                 self.y -= self.dy
             case "down":
                 self.y += self.dy
+            case "none":
+                pass
 
         self.check_boundaries()
         self.position = (self.x, self.y)
