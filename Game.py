@@ -68,6 +68,10 @@ class Game:
                     self.p2.size = (self.bumper_width, self.bumper_height)
                     self.p2.width, self.p2.height = self.bumper_width, self.bumper_height
 
+                    # Update bumper speed
+                    self.p1.dy *= ratio[1]
+                    self.p2.dy *= ratio[1]
+
                     # Update bumper X positioning
                     self.p1.x *= ratio[0]
                     self.p2.x *= ratio[0]
@@ -76,9 +80,29 @@ class Game:
                     self.p1.y *= ratio[1]
                     self.p2.y *= ratio[1]
 
-                    # Apply updates
-                    self.p1.move("none"), self.p1.update()
-                    self.p2.move("none"), self.p2.update()
+                    # Apply bumper updates
+                    self.p1.position = (self.p1.x, self.p1.y)
+                    self.p2.position = (self.p2.x, self.p2.y)
+                    self.p1.set_image()
+                    self.p2.set_image()
+
+                    # Update ball size
+                    self.ball.diameter *= (ratio[0] + ratio[1]) / 2
+                    self.ball.size = (self.ball.diameter, self.ball.diameter)
+
+                    # Update ball speed
+                    self.ball.dx *= ratio[0]
+                    self.ball.dy *= ratio[1]
+
+                    # Update ball X positioning
+                    self.ball.x *= ratio[0]
+
+                    # Update ball Y positioning
+                    self.ball.y *= ratio[1]
+
+                    # Apply ball updates
+                    self.ball.position = (self.ball.x, self.ball.y)
+                    self.ball.set_image()
 
             if break_loop: break
 
