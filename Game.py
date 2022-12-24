@@ -64,7 +64,9 @@ class Game:
                     self.bumper_width *= ratio[0]
                     self.bumper_height *= ratio[1]
                     self.p1.size = (self.bumper_width, self.bumper_height)
+                    self.p1.width, self.p1.height = self.bumper_width, self.bumper_height
                     self.p2.size = (self.bumper_width, self.bumper_height)
+                    self.p2.width, self.p2.height = self.bumper_width, self.bumper_height
 
                     # Update bumper X positioning
                     self.p1.x *= ratio[0]
